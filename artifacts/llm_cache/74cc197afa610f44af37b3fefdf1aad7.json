@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"athletics\", \"discipline\": \"pole vault\", \"year\": 2016, \"season\": \"Summer\"}, \"rationale\": \"I need to identify the specific edition of the men's pole vault event held immediately before the 2016 Summer Olympics.\"}", "prompt_tokens": 614, "completion_tokens": 74, "estimated": false}

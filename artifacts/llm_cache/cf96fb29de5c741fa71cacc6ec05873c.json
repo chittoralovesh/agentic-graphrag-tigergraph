@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"shape\": \"edition\",\n  \"sport\": \"Wrestling\",\n  \"discipline\": \"men's greco-roman 96 kg\",\n  \"year\": 2012,\n  \"season\": \"Summer\",\n  \"attribute\": \"gold_raw\"\n}\n```", "prompt_tokens": 375, "completion_tokens": 71, "estimated": false}

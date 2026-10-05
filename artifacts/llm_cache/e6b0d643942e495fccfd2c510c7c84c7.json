@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"count_events\", \"args\": {\"sport\": \"rowing\", \"games\": \"2020 Summer Olympics\", \"attribute\": \"competitors\", \"op\": \">\", \"threshold\": 36}, \"rationale\": \"I need to count the number of rowing events at the 2020 Summer Olympics with more than 36 competitors.\"}", "prompt_tokens": 614, "completion_tokens": 80, "estimated": false}

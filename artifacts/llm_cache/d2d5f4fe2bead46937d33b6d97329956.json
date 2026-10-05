@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"shape\": \"count\",\n  \"sport\": \"Shooting\",\n  \"year\": 2004,\n  \"season\": \"Summer\",\n  \"attribute\": \"competitors\",\n  \"op\": \">\",\n  \"threshold\": 37\n}\n```", "prompt_tokens": 370, "completion_tokens": 68, "estimated": false}

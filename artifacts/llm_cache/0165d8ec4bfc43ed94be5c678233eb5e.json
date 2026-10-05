@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"argmax_event\", \"args\": {\"sport\": \"Shooting\", \"games\": \"2016 Summer Olympics\", \"attribute\": \"competitors\", \"direction\": \"highest\"}, \"rationale\": \"I need to find the shooting event with the maximum number of competitors at the 2016 Summer Olympics.\"}", "prompt_tokens": 612, "completion_tokens": 71, "estimated": false}

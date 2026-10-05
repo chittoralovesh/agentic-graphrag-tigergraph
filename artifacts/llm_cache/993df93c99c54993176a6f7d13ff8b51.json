@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"shape\": \"venue_date\",\n  \"venue\": \"Mountain Bike Centre\",\n  \"date\": \"21 August\",\n  \"games\": \"2016 Summer Olympics\",\n  \"attribute\": \"gold_raw\"\n}\n```", "prompt_tokens": 371, "completion_tokens": 61, "estimated": false}

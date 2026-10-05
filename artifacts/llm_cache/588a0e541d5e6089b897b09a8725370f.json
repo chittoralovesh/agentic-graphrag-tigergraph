@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"athletics\", \"discipline\": \"women's 10,000 metres\", \"year\": 2016, \"season\": \"Summer\"}, \"rationale\": \"I need to identify the specific Olympic Games edition before 2016 to find the event.\"}", "prompt_tokens": 620, "completion_tokens": 76, "estimated": false}

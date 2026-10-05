@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"shape\": \"edition\",\n  \"sport\": \"Speed skating\",\n  \"discipline\": \"women's 500 metres\",\n  \"year\": 2014,\n  \"season\": \"Winter\",\n  \"attribute\": \"gold_raw\"\n}\n```", "prompt_tokens": 374, "completion_tokens": 69, "estimated": false}

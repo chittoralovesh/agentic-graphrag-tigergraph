@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"shape\": \"edition\",\n  \"year\": 2016,\n  \"direction\": \"before\",\n  \"season\": \"Summer\",\n  \"sport\": \"athletics\",\n  \"discipline\": \"men's pole vault\",\n  \"attribute\": \"gold_raw\"\n}\n```", "prompt_tokens": 370, "completion_tokens": 73, "estimated": false}

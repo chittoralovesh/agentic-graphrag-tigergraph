@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"Judo\", \"discipline\": \"Women's 57 kg\", \"year\": 2020, \"season\": \"Summer\"}, \"rationale\": \"I need to identify the specific event edition held immediately before 2020 to then find the gold medalist.\"}", "prompt_tokens": 617, "completion_tokens": 76, "estimated": false}

@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"taekwondo\", \"discipline\": \"men's 68 kg\", \"year\": 2016, \"season\": \"Summer\"}, \"rationale\": \"I need to identify the specific edition of the men's 68 kg taekwondo event held before the 2016 Summer Olympics.\"}", "prompt_tokens": 617, "completion_tokens": 83, "estimated": false}

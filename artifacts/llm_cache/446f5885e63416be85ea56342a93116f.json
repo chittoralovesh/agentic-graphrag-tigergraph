@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"boxing\", \"discipline\": \"men's light flyweight\", \"year\": 2016, \"season\": \"Summer\"}, \"rationale\": \"I need to identify the specific Olympic Games edition for the men's light flyweight boxing event held immediately before 2016.\"}", "prompt_tokens": 615, "completion_tokens": 79, "estimated": false}

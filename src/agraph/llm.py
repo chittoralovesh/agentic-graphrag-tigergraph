@@ -85,7 +85,24 @@ class GeminiClient:
                 "GEMINI_API_KEY is not set. Copy .env.example to .env and add a key "
                 "from https://aistudio.google.com/apikey"
             )
-        self.model = model or os.environ.get("GEMINI_CHAT_MODEL", "gemini-2.0-flash")
+        # Each Gemini model carries its own free-tier daily cap (several are as
+        # low as 20 or 500 requests). When one is exhausted the run would
+        # otherwise stall in backoff, so the client retires that model for the
+        # session and continues on the next. Which model served each call is
+        # recorded, so the benchmark can report it rather than quietly mixing.
+        self.model = model or os.environ.get("GEMINI_CHAT_MODEL", "gemini-2.5-flash")
+        pool = os.environ.get("GEMINI_MODEL_POOL", "")
+        self.model_pool = [m.strip() for m in pool.split(",") if m.strip()] or [
+            self.model,
+            "gemini-2.5-flash",
+            "gemini-3.1-flash-lite",
+            "gemini-3.5-flash",
+            "gemini-flash-lite-latest",
+        ]
+        if self.model not in self.model_pool:
+            self.model_pool.insert(0, self.model)
+        self.exhausted: set[str] = set()
+        self.model_calls: dict[str, int] = {}
         self.embed_model = embed_model or os.environ.get(
             "GEMINI_EMBED_MODEL", "text-embedding-004"
         )
@@ -105,8 +122,10 @@ class GeminiClient:
         return _CACHE_DIR / f"{key}.json"
 
     def _cache_key(self, prompt: str, system: str, temperature: float) -> str:
+        # Deliberately excludes the model: a cached answer stays valid when a
+        # quota forces a different model mid-run, which keeps re-runs free.
         blob = json.dumps(
-            [self.model, system, prompt, temperature], ensure_ascii=False
+            [system, prompt, temperature], ensure_ascii=False
         ).encode("utf-8")
         return hashlib.sha256(blob).hexdigest()[:32]
 
@@ -139,11 +158,13 @@ class GeminiClient:
 
         last_err: Exception | None = None
         for attempt in range(max_retries):
+            model = self._active_model()
             try:
                 self._limiter.wait()
                 resp = self._client.models.generate_content(
-                    model=self.model, contents=prompt, config=cfg
+                    model=model, contents=prompt, config=cfg
                 )
+                self.model_calls[model] = self.model_calls.get(model, 0) + 1
                 text = (resp.text or "").strip()
                 um = getattr(resp, "usage_metadata", None)
                 if um and getattr(um, "prompt_token_count", None) is not None:
@@ -174,6 +195,11 @@ class GeminiClient:
                 return Reply(text, tokens, estimated=estimated)
             except Exception as exc:  # noqa: BLE001 - surface after retries
                 last_err = exc
+                # A per-day cap will not clear inside this run: retire the
+                # model and retry immediately on the next one rather than
+                # sleeping against a quota that resets tomorrow.
+                if _is_daily_quota(exc) and self._retire(model):
+                    continue
                 if attempt < max_retries - 1:
                     if _is_rate_limit(exc):
                         time.sleep(min(2**attempt * 2, 60))
@@ -184,6 +210,28 @@ class GeminiClient:
                     continue
                 break
         raise RuntimeError(f"Gemini call failed after {max_retries} attempts: {last_err}")
+
+    # -- model pool --------------------------------------------------------
+    def _active_model(self) -> str:
+        if self.model not in self.exhausted:
+            return self.model
+        for m in self.model_pool:
+            if m not in self.exhausted:
+                self.model = m
+                return m
+        # Everything is spent; try the original and let the error surface.
+        return self.model_pool[0]
+
+    def _retire(self, model: str) -> bool:
+        """Mark a model's daily quota spent. True if another model remains."""
+        if model not in self.exhausted:
+            self.exhausted.add(model)
+            print(f"  [llm] daily quota spent on {model}; switching", flush=True)
+        remaining = [m for m in self.model_pool if m not in self.exhausted]
+        if remaining:
+            self.model = remaining[0]
+            return True
+        return False
 
     # -- embeddings --------------------------------------------------------
     def embed(self, texts: list[str], batch_size: int = 100, task: str = "RETRIEVAL_DOCUMENT") -> list[list[float]]:
@@ -218,6 +266,16 @@ def _approx_tokens(text: str) -> int:
 def _is_rate_limit(exc: Exception) -> bool:
     s = str(exc).lower()
     return "429" in s or "resource_exhausted" in s or "quota" in s or "rate" in s
+
+
+def _is_daily_quota(exc: Exception) -> bool:
+    """A per-day free-tier cap, as opposed to a per-minute rate limit.
+
+    Per-day caps do not clear within a run, so backing off against one just
+    stalls; the caller should move to a different model instead.
+    """
+    s = str(exc)
+    return "429" in s and ("PerDay" in s or "per day" in s.lower())
 
 
 def _is_transient(exc: Exception) -> bool:

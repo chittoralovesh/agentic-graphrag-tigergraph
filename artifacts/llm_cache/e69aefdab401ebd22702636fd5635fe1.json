@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"cross-country skiing\", \"discipline\": \"men's 30 kilometre pursuit\", \"year\": 2010, \"season\": \"Winter\"}, \"rationale\": \"I need to identify the specific Winter Olympics edition held immediately before 2010 to find the event.\"}", "prompt_tokens": 620, "completion_tokens": 78, "estimated": false}

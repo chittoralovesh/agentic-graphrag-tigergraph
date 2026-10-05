@@ -1,0 +1,1 @@
+{"text": "{\"sufficient\": false, \"missing\": \"The evidence indicates the query is ambiguous because multiple events share the same venue and date. The specific event title is needed to identify the gold medalist.\"}", "prompt_tokens": 399, "completion_tokens": 39, "estimated": false}

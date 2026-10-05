@@ -1,0 +1,1 @@
+{"text": "{\n  \"shape\": \"count\",\n  \"sport\": \"rowing\",\n  \"games\": \"2020 Summer Olympics\",\n  \"attribute\": \"competitors\",\n  \"op\": \">\",\n  \"threshold\": 36\n}", "prompt_tokens": 370, "completion_tokens": 57, "estimated": false}

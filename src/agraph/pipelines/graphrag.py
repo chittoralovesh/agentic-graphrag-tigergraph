@@ -18,6 +18,7 @@ Without this control, "agentic beats RAG" would conflate two separate causes.
 from __future__ import annotations
 
 import json
+import re
 
 from ..graphmodel import GraphTables
 from ..llm import GeminiClient
@@ -197,6 +198,28 @@ def _repair_plan(plan: dict, question: str) -> None:
     it puts an edition's discipline under event_title. Both are cheap to
     detect from the question text and cost an entire answer when wrong.
     """
+    shape = (plan.get("shape") or "").lower()
+
+    # Venue and date must match the corpus verbatim, and the router paraphrases
+    # them: it respaces "TechnologyUniversity" and drops ", Barcelona". Those
+    # edits break exact lookup, after which same-day siblings tie and the wrong
+    # event wins. The router picks the shape; the literals come from the text.
+    if shape == "venue_date":
+        m = re.search(r"held at (.+?) on (.+?)(?: at the (.+?) Olympics)?\?\s*$", question)
+        if m:
+            plan["venue"] = m.group(1).strip()
+            plan["date"] = m.group(2).strip()
+            if m.group(3):
+                plan["games"] = m.group(3).strip()
+
+    # "how many X events at the 2018 Winter Olympics" sometimes arrives split
+    # into year and season with no games field, which selects an empty group
+    # and silently counts zero.
+    if shape in ("count", "argmax") and not plan.get("games"):
+        year, season = plan.get("year"), plan.get("season")
+        if year and season:
+            plan["games"] = f"{year} {season}"
+
     q = question.lower()
     if "who won" in q or "winner" in q:
         for word, attr in MEDAL_WORDS.items():

@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"biathlon\", \"discipline\": \"men's sprint\", \"year\": 2022, \"season\": \"Winter\"}, \"rationale\": \"I need to identify the specific Winter Olympics edition immediately preceding 2022 to locate the correct event.\"}", "prompt_tokens": 614, "completion_tokens": 72, "estimated": false}

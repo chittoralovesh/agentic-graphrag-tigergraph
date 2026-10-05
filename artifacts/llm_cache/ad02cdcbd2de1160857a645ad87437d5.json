@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"shape\": \"venue_date\",\n  \"venue\": \"Olympic Weightlifting Gymnasium\",\n  \"date\": \"20 September 1988\",\n  \"attribute\": \"gold_raw\",\n  \"year\": 1988,\n  \"season\": \"Summer\"\n}\n```", "prompt_tokens": 368, "completion_tokens": 73, "estimated": false}

@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"argmax_event\", \"args\": {\"sport\": \"Athletics\", \"games\": \"2008 Summer Olympics\", \"attribute\": \"competitors\", \"direction\": \"highest\"}, \"rationale\": \"I need to find the athletics event with the maximum number of competitors at the 2008 Summer Olympics.\"}", "prompt_tokens": 612, "completion_tokens": 72, "estimated": false}
