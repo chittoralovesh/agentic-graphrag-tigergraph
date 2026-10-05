@@ -1,0 +1,1 @@
+{"text": "```json\n{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"Judo\", \"discipline\": \"Judo\", \"year\": 2020, \"season\": \"Summer\"}, \"rationale\": \"Find the Summer Olympics edition for judo immediately preceding 2020.\"}\n```", "prompt_tokens": 575, "completion_tokens": 69, "estimated": false}

@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"find_event_by_venue_date\", \"args\": {\"venue\": \"Olympic Aquatic Centre\", \"date\": \"August 14, 2004\", \"games\": \"2004 Summer\"}, \"rationale\": \"Find the specific event held at the Olympic Aquatic Centre on August 14, 2004.\"}", "prompt_tokens": 575, "completion_tokens": 78, "estimated": false}

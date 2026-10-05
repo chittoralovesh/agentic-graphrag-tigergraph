@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"find_event_by_venue_date\", \"args\": {\"venue\": \"Olympic Weightlifting Gymnasium\", \"date\": \"20 September 1988\", \"games\": \"1988 Summer\"}, \"rationale\": \"Identify the event held at the Olympic Weightlifting Gymnasium on 20 September 1988.\"}", "prompt_tokens": 570, "completion_tokens": 76, "estimated": false}

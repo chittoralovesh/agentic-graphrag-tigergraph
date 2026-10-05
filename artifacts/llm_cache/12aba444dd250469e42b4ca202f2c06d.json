@@ -1,0 +1,1 @@
+{"text": "```json\n{\"tool\": \"find_event_by_venue_date\", \"args\": {\"venue\": \"London Velopark\", \"date\": \"3 to 4 August\", \"games\": \"2012 Summer Olympics\"}, \"rationale\": \"Identify the event held at London Velopark on 3-4 August 2012.\"}\n```", "prompt_tokens": 576, "completion_tokens": 79, "estimated": false}

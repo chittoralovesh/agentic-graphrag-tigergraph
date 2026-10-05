@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"shape\": \"argmax\",\n  \"sport\": \"sailing\",\n  \"games\": \"2000 Summer Olympics\",\n  \"attribute\": \"competitors\",\n  \"direction\": \"highest\"\n}\n```", "prompt_tokens": 267, "completion_tokens": 55, "estimated": false}

@@ -1,0 +1,1 @@
+{"text": "```json\n{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"Swimming\", \"discipline\": \"Swimming\", \"year\": 2016, \"season\": \"Summer\"}, \"rationale\": \"Find the Summer Olympics swimming edition immediately before 2016.\"}\n```", "prompt_tokens": 576, "completion_tokens": 65, "estimated": false}

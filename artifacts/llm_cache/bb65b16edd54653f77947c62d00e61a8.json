@@ -1,0 +1,1 @@
+{"text": "{\n  \"shape\": \"count\",\n  \"sport\": \"rowing\",\n  \"games\": \"1996 Summer Olympics\",\n  \"season\": \"Summer\",\n  \"year\": 1996,\n  \"attribute\": \"competitors\",\n  \"op\": \">\",\n  \"threshold\": 39\n}", "prompt_tokens": 269, "completion_tokens": 76, "estimated": false}

@@ -74,7 +74,7 @@ class GeminiClient:
         api_key: str | None = None,
         model: str | None = None,
         embed_model: str | None = None,
-        rpm: int = 28,
+        rpm: int = 90,
         use_cache: bool = True,
     ):
         from google import genai  # imported lazily so the module loads without the dep

@@ -1,0 +1,1 @@
+{"text": "```json\n{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"biathlon\", \"discipline\": \"men's sprint\", \"year\": 2022, \"season\": \"Winter\"}, \"rationale\": \"Find the event ID for the men's sprint biathlon at the Winter Olympics immediately before 2022.\"}\n```", "prompt_tokens": 572, "completion_tokens": 79, "estimated": false}

@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"shape\": \"venue_date\",\n  \"venue\": \"Sydney Convention and Exhibition Centre\",\n  \"date\": \"18 September to 1 October 2000\",\n  \"games\": \"2000 Summer\",\n  \"attribute\": \"gold_raw\"\n}\n```", "prompt_tokens": 272, "completion_tokens": 71, "estimated": false}

@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"link_event_by_title\", \"args\": {\"title\": \"Wrestling at the 1992 Summer Olympics \\u2013 Men's freestyle 82 kg\"}, \"rationale\": \"Resolve the event vertex to read the gold medalist attribute.\"}", "prompt_tokens": 705, "completion_tokens": 62, "estimated": false}

@@ -1,0 +1,1 @@
+{"text": "{\n  \"shape\": \"argmax\",\n  \"sport\": \"Fencing\",\n  \"games\": \"1992 Summer Olympics\",\n  \"attribute\": \"competitors\",\n  \"year\": 1992,\n  \"season\": \"Summer\",\n  \"direction\": \"highest\"\n}", "prompt_tokens": 267, "completion_tokens": 69, "estimated": false}

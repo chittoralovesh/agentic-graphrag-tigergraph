@@ -1,0 +1,1 @@
+{"text": "```json\n{\"tool\": \"link_event_by_title\", \"args\": {\"title\": \"Shooting at the 2012 Summer Olympics \\u2013 Men's 50 metre rifle three positions\"}, \"rationale\": \"Resolve the event by its exact title to read its attribute.\"}\n```", "prompt_tokens": 572, "completion_tokens": 70, "estimated": false}

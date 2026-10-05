@@ -1,0 +1,1 @@
+{"text": "```json\n{\"tool\": \"find_event_by_venue_date\", \"args\": {\"venue\": \"Royal Artillery Barracks\", \"date\": \"28 July 2012\", \"games\": \"2012 Summer\"}, \"rationale\": \"Identify the event held at this venue on this date.\"}\n```", "prompt_tokens": 570, "completion_tokens": 71, "estimated": false}

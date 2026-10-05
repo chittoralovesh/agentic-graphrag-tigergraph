@@ -1,0 +1,1 @@
+{"text": "```json\n{\"verdict\": \"FAIL\", \"why\": \"The answer '3' does not match the reference '17'.\"}\n```", "prompt_tokens": 182, "completion_tokens": 31, "estimated": false}

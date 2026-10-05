@@ -1,0 +1,1 @@
+{"text": "{\n  \"shape\": \"count\",\n  \"sport\": \"Fencing\",\n  \"games\": \"2000 Summer\",\n  \"op\": \">\",\n  \"threshold\": 39,\n  \"attribute\": \"competitors\"\n}", "prompt_tokens": 269, "completion_tokens": 57, "estimated": false}

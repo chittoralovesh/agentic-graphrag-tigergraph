@@ -1,0 +1,1 @@
+{"text": "```json\n{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"Athletics\", \"discipline\": \"20 kilometres walk\", \"year\": 2016, \"season\": \"Summer\"}, \"rationale\": \"Find the event id for the 20 kilometres walk at the Summer Olympics immediately before 2016.\"}\n```", "prompt_tokens": 575, "completion_tokens": 79, "estimated": false}

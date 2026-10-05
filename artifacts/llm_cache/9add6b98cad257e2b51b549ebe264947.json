@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"Wrestling\", \"discipline\": \"Men's freestyle 82 kg\", \"year\": 1996, \"season\": \"Summer\"}, \"rationale\": \"Find the event ID for the men's freestyle 82 kg wrestling event at the Summer Olympics immediately before 1996.\"}", "prompt_tokens": 575, "completion_tokens": 82, "estimated": false}

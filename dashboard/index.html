@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentic GraphRAG Benchmark</title>
+<style>
+:root{--bg:#fbfaf9;--fg:#1c1a17;--muted:#6b6560;--line:#e5e1dc;--card:#fff;
+--rag:#b4654a;--graphrag:#4a7ab4;--agentic:#3f8f6a;--warn:#c0392b}
+:root:not([data-theme="light"]){@media (prefers-color-scheme:dark){
+:root{--bg:#17161a;--fg:#ece9e4;--muted:#9c958d;--line:#2e2b30;--card:#201e23}}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+--bg:#17161a;--fg:#ece9e4;--muted:#9c958d;--line:#2e2b30;--card:#201e23}}
+:root[data-theme="dark"]{--bg:#17161a;--fg:#ece9e4;--muted:#9c958d;--line:#2e2b30;--card:#201e23}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1060px;margin:0 auto;padding:40px 16px 80px}
+h1{font-size:28px;margin:0 0 6px;letter-spacing:-.02em}
+h2{font-size:18px;margin:38px 0 12px;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 28px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+.card .name{font-size:13px;color:var(--muted);margin-bottom:8px}
+.big{font-size:30px;font-weight:600;letter-spacing:-.02em}
+.meta{font-size:13px;color:var(--muted);margin-top:6px}
+table{width:100%;border-collapse:collapse;background:var(--card);
+border:1px solid var(--line);border-radius:10px;overflow:hidden;font-size:14px}
+th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+thead th{background:transparent;color:var(--muted);font-weight:500;font-size:13px}
+tbody tr:last-child td{border-bottom:none}
+.bar{height:9px;border-radius:5px;background:var(--line);overflow:hidden;min-width:70px}
+.bar>i{display:block;height:100%;border-radius:5px}
+.zero{color:var(--warn);font-weight:600}
+.note{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--agentic);
+border-radius:8px;padding:14px 16px;margin:18px 0;font-size:14px}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+</style></head><body><div class="wrap">
+<h1>Agentic GraphRAG &mdash; benchmark</h1>
+<p class="sub">Three pipelines, one corpus, 100 evaluation questions. Accuracy beside token cost.</p>
+<div id="app"></div></div>
+<script>const DATA = {"metrics": {"rag": {"n": 100, "correct": 58, "accuracy": 0.58, "total_tokens": 200216, "mean_tokens": 2002.16, "mean_steps": 2, "mean_seconds": 3.36356, "mean_citations": 4.95, "tokens_per_correct": 3452.0, "by_type": {"aggregation": {"n": 21, "correct": 0, "accuracy": 0.0, "mean_tokens": 1990.952380952381, "mean_steps": 2}, "temporal": {"n": 22, "correct": 16, "accuracy": 0.7272727272727273, "mean_tokens": 2138.5454545454545, "mean_steps": 2}, "superlative": {"n": 10, "correct": 2, "accuracy": 0.2, "mean_tokens": 1732, "mean_steps": 2}, "multi_hop": {"n": 28, "correct": 23, "accuracy": 0.8214285714285714, "mean_tokens": 2122.3214285714284, "mean_steps": 2}, "lookup": {"n": 19, "correct": 17, "accuracy": 0.8947368421052632, "mean_tokens": 1821.7368421052631, "mean_steps": 2}}, "mean_doc_recall": 0.690628, "complete_doc_recall": 0.57}, "graphrag": {"n": 100, "correct": 85, "accuracy": 0.85, "total_tokens": 146719, "mean_tokens": 1467.19, "mean_steps": 3.64, "mean_seconds": 5.83814, "mean_citations": 7.37, "tokens_per_correct": 1726.105882352941, "by_type": {"aggregation": {"n": 21, "correct": 19, "accuracy": 0.9047619047619048, "mean_tokens": 1011.5714285714286, "mean_steps": 3}, "temporal": {"n": 22, "correct": 16, "accuracy": 0.7272727272727273, "mean_tokens": 2484.818181818182, "mean_steps": 4}, "superlative": {"n": 10, "correct": 10, "accuracy": 1.0, "mean_tokens": 827, "mean_steps": 3}, "multi_hop": {"n": 28, "correct": 22, "accuracy": 0.7857142857142857, "mean_tokens": 850.0714285714286, "mean_steps": 3.9285714285714284}, "lookup": {"n": 19, "correct": 18, "accuracy": 0.9473684210526315, "mean_tokens": 2038.842105263158, "mean_steps": 3.8421052631578947}}, "mean_doc_recall": 0.916404, "complete_doc_recall": 0.86}, "agentic": {"n": 6, "correct": 6, "accuracy": 1.0, "total_tokens": 11415, "mean_tokens": 1902.5, "mean_steps": 4.5, "mean_seconds": 8.86, "mean_citations": 13.333333333333334, "tokens_per_correct": 1902.5, "by_type": {"aggregation": {"n": 2, "correct": 2, "accuracy": 1.0, "mean_tokens": 1226, "mean_steps": 3}, "temporal": {"n": 2, "correct": 2, "accuracy": 1.0, "mean_tokens": 2556.5, "mean_steps": 6}, "superlative": {"n": 1, "correct": 1, "accuracy": 1.0, "mean_tokens": 1370, "mean_steps": 3}, "multi_hop": {"n": 1, "correct": 1, "accuracy": 1.0, "mean_tokens": 2480, "mean_steps": 6}}, "mean_doc_recall": 0.9166666666666666, "complete_doc_recall": 0.8333333333333334, "behaviour": {"tool_usage": {"orchestrate": 6, "synthesize": 5, "evidence_critic": 3, "count_events": 2, "edition_before_year": 2, "read_attribute": 2, "argmax_event": 1, "find_event_by_venue_date": 1, "vector_search": 1}, "stop_reasons": {"count_events returned a complete result; no review needed": 2, "read_attribute returned a complete result; no review needed": 2, "argmax_event returned a complete result; no review needed": 1, "orchestrator judged the evidence sufficient": 1}, "mean_steps_by_type": {"aggregation": 3, "multi_hop": 6, "superlative": 3, "temporal": 6}, "strategy_changes": 1}}}, "ceiling": {"k_values": [5, 10, 20, 50, 100], "by_type": {"aggregation": {"mean_gold_docs": 15.14, "n_questions": 21, "partial_recall": {"5": 0.2507, "10": 0.441, "20": 0.6335, "50": 0.8876, "100": 0.9732}, "complete_recall": {"5": 0.0, "10": 0.0476, "20": 0.2381, "50": 0.619, "100": 0.8571}}, "lookup": {"mean_gold_docs": 1, "n_questions": 19, "partial_recall": {"5": 1.0, "10": 1.0, "20": 1.0, "50": 1.0, "100": 1.0}, "complete_recall": {"5": 1.0, "10": 1.0, "20": 1.0, "50": 1.0, "100": 1.0}}, "multi_hop": {"mean_gold_docs": 1, "n_questions": 28, "partial_recall": {"5": 0.8929, "10": 0.8929, "20": 0.9643, "50": 1.0, "100": 1.0}, "complete_recall": {"5": 0.8929, "10": 0.8929, "20": 0.9643, "50": 1.0, "100": 1.0}}, "superlative": {"mean_gold_docs": 13.8, "n_questions": 10, "partial_recall": {"5": 0.2798, "10": 0.4344, "20": 0.6493, "50": 0.8983, "100": 0.948}, "complete_recall": {"5": 0.0, "10": 0.0, "20": 0.1, "50": 0.6, "100": 0.8}}, "temporal": {"mean_gold_docs": 2, "n_questions": 22, "partial_recall": {"5": 0.7727, "10": 0.9318, "20": 0.9545, "50": 1.0, "100": 1.0}, "complete_recall": {"5": 0.5909, "10": 0.8636, "20": 0.9091, "50": 1.0, "100": 1.0}}}}, "order": ["rag", "graphrag", "agentic"], "label": {"rag": "RAG", "graphrag": "GraphRAG", "agentic": "Agentic GraphRAG"}, "qtypes": ["lookup", "multi_hop", "temporal", "aggregation", "superlative"]};
+const C={rag:'var(--rag)',graphrag:'var(--graphrag)',agentic:'var(--agentic)'};
+const pct=x=>(100*x).toFixed(0)+'%';
+// Returns a fragment, not firstElementChild: most sections are an <h2> plus a
+// <table>, and taking only the first element silently drops every table.
+const el=(h)=>{const t=document.createElement('template');t.innerHTML=h.trim();return t.content};
+const app=document.getElementById('app');
+const M=DATA.metrics, order=DATA.order;
+
+// headline cards
+let cards='<div class="cards">';
+for(const n of order){const m=M[n];
+  cards+=`<div class="card"><div class="name">${DATA.label[n]}</div>
+  <div class="big" style="color:${C[n]}">${pct(m.accuracy)}</div>
+  <div class="meta">${m.correct}/${m.n} correct<br>${Math.round(m.mean_tokens)} tokens/question
+  ${m.tokens_per_correct?`<br>${Math.round(m.tokens_per_correct)} tokens per correct answer`:''}</div></div>`;}
+cards+='</div>';
+app.appendChild(el(cards));
+
+// accuracy by question type
+let t='<h2>Accuracy by question type</h2><table><thead><tr><th>question type</th>';
+for(const n of order) t+=`<th>${DATA.label[n]}</th>`;
+t+='</tr></thead><tbody>';
+for(const q of DATA.qtypes){
+  const any=order.find(n=>M[n].by_type[q]); if(!any) continue;
+  t+=`<tr><td>${q}</td>`;
+  for(const n of order){const b=M[n].by_type[q];
+    if(!b){t+='<td>&mdash;</td>';continue}
+    const z=b.correct===0?' class="zero"':'';
+    t+=`<td${z}>${b.correct}/${b.n} <span style="color:var(--muted)">(${pct(b.accuracy)})</span></td>`;}
+  t+='</tr>';}
+t+='</tbody></table>';
+app.appendChild(el(t));
+
+// cost
+let c='<h2>Cost of being right</h2><table><thead><tr><th>pipeline</th><th>tokens / question</th>'
+ +'<th>steps</th><th>tokens / correct answer</th></tr></thead><tbody>';
+const maxT=Math.max(...order.map(n=>M[n].tokens_per_correct||0));
+for(const n of order){const m=M[n];const w=maxT?100*(m.tokens_per_correct||0)/maxT:0;
+  c+=`<tr><td>${DATA.label[n]}</td><td>${Math.round(m.mean_tokens)}</td>
+  <td>${m.mean_steps.toFixed(1)}</td><td><div style="display:flex;gap:8px;align-items:center;justify-content:flex-end">
+  <div class="bar" style="flex:1"><i style="width:${w}%;background:${C[n]}"></i></div>
+  <span>${m.tokens_per_correct?Math.round(m.tokens_per_correct):'—'}</span></div></td></tr>`;}
+c+='</tbody></table>';
+app.appendChild(el(c));
+
+// retrieval ceiling
+if(DATA.ceiling&&DATA.ceiling.by_type){
+ let r='<h2>Why top-k retrieval cannot close the gap</h2>'
+  +'<div class="note">Measured with no LLM involved. <b>Complete</b> retrieval means every '
+  +'supporting document reached the top-k. For a count or an arg-max, partial retrieval is '
+  +'worth nothing: 14 of 15 events still yields the wrong number.</div>'
+  +'<table><thead><tr><th>question type</th><th>supporting docs</th>'
+  +'<th>complete @5</th><th>@20</th><th>@100</th></tr></thead><tbody>';
+ for(const q of DATA.qtypes){const b=DATA.ceiling.by_type[q]; if(!b) continue;
+  const z=v=>v===0?' class="zero"':'';
+  r+=`<tr><td>${q}</td><td>${b.mean_gold_docs}</td>
+  <td${z(b.complete_recall['5'])}>${pct(b.complete_recall['5'])}</td>
+  <td>${pct(b.complete_recall['20'])}</td><td>${pct(b.complete_recall['100'])}</td></tr>`;}
+ r+='</tbody></table>';
+ app.appendChild(el(r));}
+
+// agentic behaviour
+const beh=M.agentic&&M.agentic.behaviour;
+if(beh){
+ let b='<h2>Agentic behaviour</h2><table><thead><tr><th>tool</th><th>questions used on</th>'
+  +'</tr></thead><tbody>';
+ for(const [k,v] of Object.entries(beh.tool_usage)) b+=`<tr><td><code>${k}</code></td><td>${v}</td></tr>`;
+ b+='</tbody></table>';
+ let s='<h2>Steps taken, by question type</h2><table><thead><tr><th>question type</th>'
+  +'<th>mean steps</th></tr></thead><tbody>';
+ for(const [k,v] of Object.entries(beh.mean_steps_by_type)) s+=`<tr><td>${k}</td><td>${v}</td></tr>`;
+ s+='</tbody></table>';
+ app.appendChild(el(b)); app.appendChild(el(s));
+ let st='<h2>Why the agent stopped</h2><table><thead><tr><th>stop reason</th><th>questions</th>'
+  +'</tr></thead><tbody>';
+ for(const [k,v] of Object.entries(beh.stop_reasons)) st+=`<tr><td>${k||'—'}</td><td>${v}</td></tr>`;
+ st+='</tbody></table>'; app.appendChild(el(st));}
+</script></body></html>

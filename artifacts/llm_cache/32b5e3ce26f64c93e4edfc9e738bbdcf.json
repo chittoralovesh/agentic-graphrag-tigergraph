@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"athletics\", \"discipline\": \"athletics\", \"year\": 2016, \"season\": \"Summer\"}, \"rationale\": \"Search for the athletics edition before 2016 using the discipline name 'athletics'.\"}", "prompt_tokens": 612, "completion_tokens": 64, "estimated": false}

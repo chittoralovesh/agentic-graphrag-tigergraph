@@ -1,0 +1,1 @@
+{"text": "```json\n{\"tool\": \"read_attribute\", \"args\": {\"event_id\": \"Q25301483\", \"attribute\": \"gold_raw\"}, \"rationale\": \"Read the gold medal winner attribute from the resolved event.\"}\n```", "prompt_tokens": 858, "completion_tokens": 57, "estimated": false}

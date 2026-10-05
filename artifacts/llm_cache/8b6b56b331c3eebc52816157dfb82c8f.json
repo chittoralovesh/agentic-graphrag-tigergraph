@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"vector_search\", \"args\": {\"query\": \"women's 57 kg judo gold medal 2016 Summer Olympics Rio\", \"top_k\": 3}, \"rationale\": \"Find the women's 57 kg judo event at the 2016 Summer Olympics (the one immediately before 2020) via passage search.\"}", "prompt_tokens": 615, "completion_tokens": 85, "estimated": false}
