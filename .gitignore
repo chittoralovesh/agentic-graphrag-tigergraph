@@ -1,0 +1,18 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.local
+
+# Large build products - regenerate with scripts/01_build_graph.py
+artifacts/*.pkl
+artifacts/embeddings/
+artifacts/runs/
+
+# Corpus ships with the hackathon dataset, not with the repo (23 MB).
+# See data/README.md for the download link.
+data/corpus/*.jsonl
+
+.ipynb_checkpoints/
+.DS_Store
