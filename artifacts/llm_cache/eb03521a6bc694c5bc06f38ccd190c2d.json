@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"find_event_by_venue_date\", \"args\": {\"venue\": \"Sydney International Shooting Centre\", \"date\": \"21 September 2000\", \"games\": \"2000 Summer Olympics\"}, \"rationale\": \"I need to identify the specific event held at this venue on the given date to retrieve the gold medalist.\"}", "prompt_tokens": 625, "completion_tokens": 77, "estimated": false}

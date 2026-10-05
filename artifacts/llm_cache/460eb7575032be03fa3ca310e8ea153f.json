@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"argmax_event\", \"args\": {\"sport\": \"Weightlifting\", \"games\": \"1992 Summer Olympics\", \"attribute\": \"competitors\", \"direction\": \"highest\"}, \"rationale\": \"I need to find the weightlifting event with the maximum number of competitors at the 1992 Summer Olympics.\"}", "prompt_tokens": 613, "completion_tokens": 72, "estimated": false}

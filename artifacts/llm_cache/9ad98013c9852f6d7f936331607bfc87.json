@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"speed skating\", \"discipline\": \"women's 500 metres\", \"year\": 2014, \"season\": \"Winter\"}, \"rationale\": \"I need to identify the specific Winter Olympics edition immediately preceding 2014 to find the event.\"}", "prompt_tokens": 618, "completion_tokens": 75, "estimated": false}

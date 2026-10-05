@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"count_events\", \"args\": {\"sport\": \"Speed skating\", \"games\": \"2010 Winter Olympics\", \"attribute\": \"competitors\", \"op\": \">\", \"threshold\": 36}, \"rationale\": \"I need to count the number of speed skating events at the 2010 Winter Olympics with more than 36 competitors.\"}", "prompt_tokens": 615, "completion_tokens": 81, "estimated": false}

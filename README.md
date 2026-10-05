@@ -45,6 +45,8 @@ cannot fit the evidence set into its context window.
 
 ## Architecture
 
+![Architecture](docs/architecture.svg)
+
 ```
                          ┌─────────────────────────────────┐
                          │   Benchmark harness             │
@@ -201,6 +203,14 @@ src/agraph/
 scripts/             numbered, run in order
 dashboard/           self-contained metrics dashboard
 ```
+
+---
+
+## Documents
+
+- [`docs/WRITEUP.md`](docs/WRITEUP.md) — the full argument, results and what we got wrong
+- [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) — demo video script with timings
+- [`docs/architecture.svg`](docs/architecture.svg) — architecture diagram
 
 ---
 
