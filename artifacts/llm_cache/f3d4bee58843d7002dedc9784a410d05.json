@@ -1,0 +1,1 @@
+{"text": "```json\n{\"tool\": \"link_event_by_title\", \"args\": {\"title\": \"Gymnastics at the 2016 Summer Olympics \\u2013 Men's horizontal bar\"}, \"rationale\": \"Resolve the specific event to read its nations attribute.\"}\n```", "prompt_tokens": 568, "completion_tokens": 64, "estimated": false}

@@ -1,0 +1,1 @@
+{"text": "```json\n{\"tool\": \"link_event_by_title\", \"args\": {\"title\": \"Boxing at the 1988 Summer Olympics – Light flyweight\"}, \"rationale\": \"Resolve the event title directly to read the nations attribute.\"}\n```", "prompt_tokens": 565, "completion_tokens": 56, "estimated": false}

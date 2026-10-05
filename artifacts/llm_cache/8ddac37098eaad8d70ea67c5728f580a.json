@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"count_events\", \"args\": {\"sport\": \"canoeing\", \"games\": \"2012 Summer\", \"attribute\": \"competitors\", \"op\": \">\", \"threshold\": 25}, \"rationale\": \"Use count_events to accurately count the number of canoeing events in 2012 with more than 25 competitors.\"}", "prompt_tokens": 572, "completion_tokens": 79, "estimated": false}

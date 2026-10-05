@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"argmax_event\", \"args\": {\"sport\": \"Shooting\", \"games\": \"2016 Summer Olympics\", \"attribute\": \"competitors\", \"direction\": \"highest\"}, \"rationale\": \"Rank all shooting events at the 2016 Summer Olympics by the number of competitors to find the highest.\"}", "prompt_tokens": 570, "completion_tokens": 71, "estimated": false}

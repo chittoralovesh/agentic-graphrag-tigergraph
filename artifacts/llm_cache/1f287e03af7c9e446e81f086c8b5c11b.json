@@ -1,0 +1,1 @@
+{"text": "```json\n{\"tool\": \"find_event_by_venue_date\", \"args\": {\"venue\": \"Sydney Convention and Exhibition Centre\", \"date\": \"23 September 2000\", \"games\": \"2000 Summer\"}, \"rationale\": \"Find the event held at the specified venue and date during the 2000 Summer Olympics.\"}\n```", "prompt_tokens": 571, "completion_tokens": 81, "estimated": false}

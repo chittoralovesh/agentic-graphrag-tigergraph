@@ -1,0 +1,1 @@
+{"text": "```json\n{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"Athletics\", \"discipline\": \"Discus Throw\", \"year\": 2016, \"season\": \"Summer\"}, \"rationale\": \"Find the event ID of the women's discus throw at the Summer Olympics immediately before 2016.\"}\n```", "prompt_tokens": 572, "completion_tokens": 78, "estimated": false}

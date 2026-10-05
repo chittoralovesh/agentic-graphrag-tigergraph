@@ -1,0 +1,1 @@
+{"text": "```json\n{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"Biathlon\", \"discipline\": \"Biathlon\", \"year\": 2022, \"season\": \"Winter\"}, \"rationale\": \"Find the Winter Olympics edition for biathlon immediately before 2022.\"}\n```", "prompt_tokens": 572, "completion_tokens": 69, "estimated": false}

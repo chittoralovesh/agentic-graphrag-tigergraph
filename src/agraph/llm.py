@@ -174,11 +174,13 @@ class GeminiClient:
                 return Reply(text, tokens, estimated=estimated)
             except Exception as exc:  # noqa: BLE001 - surface after retries
                 last_err = exc
-                if _is_rate_limit(exc) and attempt < max_retries - 1:
-                    time.sleep(min(2**attempt * 2, 60))
-                    continue
                 if attempt < max_retries - 1:
-                    time.sleep(2**attempt)
+                    if _is_rate_limit(exc):
+                        time.sleep(min(2**attempt * 2, 60))
+                    elif _is_transient(exc):
+                        time.sleep(min(2**attempt * 3, 45))
+                    else:
+                        time.sleep(2**attempt)
                     continue
                 break
         raise RuntimeError(f"Gemini call failed after {max_retries} attempts: {last_err}")
@@ -216,6 +218,22 @@ def _approx_tokens(text: str) -> int:
 def _is_rate_limit(exc: Exception) -> bool:
     s = str(exc).lower()
     return "429" in s or "resource_exhausted" in s or "quota" in s or "rate" in s
+
+
+def _is_transient(exc: Exception) -> bool:
+    """Connection resets and 5xx are worth a slower retry, not a failure.
+
+    A dropped connection during synthesis otherwise discards an answer the
+    retrieval layer already got exactly right.
+    """
+    s = str(exc).lower()
+    return any(
+        m in s
+        for m in (
+            "10054", "connection", "reset", "timeout", "timed out", "eof",
+            "500", "502", "503", "504", "unavailable", "internal",
+        )
+    )
 
 
 def load_env(path: str | Path | None = None) -> None:

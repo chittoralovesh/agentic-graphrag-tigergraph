@@ -1,0 +1,1 @@
+{"text": "```json\n{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"Cross Country Skiing\", \"discipline\": \"Cross Country Skiing\", \"year\": 2010, \"season\": \"Winter\"}, \"rationale\": \"Find the Winter Olympics edition for cross country skiing immediately before 2010.\"}\n```", "prompt_tokens": 578, "completion_tokens": 74, "estimated": false}

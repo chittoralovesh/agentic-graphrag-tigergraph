@@ -1,0 +1,1 @@
+{"text": "```json\n{\"tool\": \"find_event_by_venue_date\", \"args\": {\"venue\": \"ExCeL Exhibition Centre\", \"date\": \"30 July\", \"games\": \"2012 Summer Olympics\"}, \"rationale\": \"Find the specific event held at the ExCeL Exhibition Centre on 30 July 2012.\"}\n```", "prompt_tokens": 575, "completion_tokens": 80, "estimated": false}

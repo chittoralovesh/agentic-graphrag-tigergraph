@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"link_event_by_title\", \"args\": {\"title\": \"Biathlon at the 2022 Winter Olympics \\u2013 Women's relay\"}, \"rationale\": \"Resolve the specific event to read its nations attribute directly.\"}", "prompt_tokens": 567, "completion_tokens": 58, "estimated": false}

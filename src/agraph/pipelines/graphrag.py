@@ -41,8 +41,15 @@ JSON fields (include only those relevant):
   venue, date, discipline, year, season, direction
 
 attribute must be one of: nations, competitors, gold_raw, silver_raw, bronze_raw, win_value
+  "who won the gold medal" -> gold_raw   (NOT win_value: win_value is the
+  winning time or score, not the winner's name)
+  "how many nations" -> nations
+  "how many competitors" -> competitors
 op must be one of: >, >=, <, <=, ==
 season must be "Summer" or "Winter".
+
+For shape "edition", put the discipline WITHOUT the sport in "discipline",
+e.g. "men's freestyle 82 kg" with sport "Wrestling". Do not use event_title.
 
 Question: {question}
 
@@ -61,13 +68,20 @@ class GraphRAGPipeline:
     def run(self, qid: str, question: str, qtype: str = "") -> Answer:
         trace = Trace(qid=qid, pipeline=self.name, question=question, qtype=qtype)
         plan = self._route(trace, question)
+        _repair_plan(plan, question)
         shape = (plan.get("shape") or "semantic").lower()
 
+        self._direct: str | None = None
         ev = self._execute(trace, shape, plan)
         if ev is None:
             ev = self._semantic(trace, question)
 
         answer = synthesise(self.llm, trace, question, ev)
+        # A transient LLM failure must not discard an answer the graph already
+        # determined exactly: counts and arg-maxes are their own answer.
+        if answer is None and self._direct is not None:
+            answer = self._direct
+            trace.steps[-1].result_brief = f"synthesis unavailable; used exact result {answer!r}"
         return Answer(answer, trace.finish(answer, stop_reason=f"fixed plan: {shape}"))
 
     # -- stage 1 -----------------------------------------------------------
@@ -111,7 +125,10 @@ class GraphRAGPipeline:
                     int(plan.get("threshold") or 0),
                 )
                 step.doc_ids, step.result_brief = got.doc_ids, got.brief()
-                return _render(got) if got.value is not None else None
+                if got.value is None:
+                    return None
+                self._direct = str(got.value)
+                return _render(got)
 
             if shape == "argmax":
                 step = trace.step("argmax", "rank the whole group on a numeric field")
@@ -120,7 +137,10 @@ class GraphRAGPipeline:
                     plan.get("attribute") or "competitors",
                 )
                 step.doc_ids, step.result_brief = got.doc_ids, got.brief()
-                return _render(got) if got.value else None
+                if not got.value:
+                    return None
+                self._direct = str(got.value)
+                return _render(got)
 
             if shape == "venue_date":
                 step = trace.step("venue_date_lookup", "identify the event from venue and date")
@@ -133,12 +153,15 @@ class GraphRAGPipeline:
                 step = trace.step("read_attribute", "read the medallist field")
                 got = st.get_event_attribute(g, ev.value, plan.get("attribute") or "gold_raw")
                 step.doc_ids, step.result_brief = got.doc_ids, got.brief()
+                if got.value is not None:
+                    self._direct = str(got.value)
                 return _render(got, extra=ev)
 
             if shape == "edition":
                 step = trace.step("temporal_hop", "walk to the preceding edition")
                 ev = st.edition_before_year(
-                    g, plan.get("sport") or "", plan.get("discipline") or "",
+                    g, plan.get("sport") or "",
+                    plan.get("discipline") or plan.get("event_title") or "",
                     int(plan.get("year") or 0), plan.get("season"),
                 )
                 step.doc_ids, step.result_brief = ev.doc_ids, ev.brief()
@@ -147,6 +170,8 @@ class GraphRAGPipeline:
                 step = trace.step("read_attribute", "read the medallist field")
                 got = st.get_event_attribute(g, ev.value, plan.get("attribute") or "gold_raw")
                 step.doc_ids, step.result_brief = got.doc_ids, got.brief()
+                if got.value is not None:
+                    self._direct = str(got.value)
                 return _render(got, extra=ev)
         except Exception as exc:  # noqa: BLE001
             trace.steps[-1].error = str(exc)[:200]
@@ -159,6 +184,30 @@ class GraphRAGPipeline:
         step.doc_ids = list(dict.fromkeys(h.doc_id for h in hits))
         step.result_brief = f"{len(hits)} chunks"
         return format_hits(hits)
+
+
+MEDAL_WORDS = {"gold": "gold_raw", "silver": "silver_raw", "bronze": "bronze_raw"}
+
+
+def _repair_plan(plan: dict, question: str) -> None:
+    """Correct the parameter mistakes the router makes consistently.
+
+    The router reliably picks the right *shape* but mis-fills two fields:
+    it offers win_value (the winning time) for "who won the gold medal", and
+    it puts an edition's discipline under event_title. Both are cheap to
+    detect from the question text and cost an entire answer when wrong.
+    """
+    q = question.lower()
+    if "who won" in q or "winner" in q:
+        for word, attr in MEDAL_WORDS.items():
+            if f"{word} medal" in q:
+                plan["attribute"] = attr
+                break
+        else:
+            if plan.get("attribute") in (None, "win_value"):
+                plan["attribute"] = "gold_raw"
+    if (plan.get("shape") or "").lower() == "edition" and not plan.get("discipline"):
+        plan["discipline"] = plan.get("event_title") or ""
 
 
 def _render(ev, extra=None) -> str:

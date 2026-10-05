@@ -1,0 +1,1 @@
+{"text": "```json\n{\n  \"shape\": \"edition\",\n  \"discipline\": \"20 kilometres walk\",\n  \"sport\": \"Athletics\",\n  \"attribute\": \"gold_raw\",\n  \"year\": 2016,\n  \"season\": \"Summer\",\n  \"direction\": \"before\"\n}\n```", "prompt_tokens": 373, "completion_tokens": 74, "estimated": false}

@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"link_event_by_title\", \"args\": {\"title\": \"Athletics at the 2012 Summer Olympics \\u2013 Women's 10,000 metres\"}, \"rationale\": \"Resolve the event title to get its ID and read the gold medalist.\"}", "prompt_tokens": 700, "completion_tokens": 69, "estimated": false}

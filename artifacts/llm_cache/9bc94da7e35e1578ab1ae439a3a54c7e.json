@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"find_event_by_venue_date\", \"args\": {\"venue\": \"ANZ Stadium\", \"date\": \"22 September 2000 (heats)25 September 2000 (final)\", \"games\": \"2000 Summer\"}, \"rationale\": \"Identify the event held at ANZ Stadium on this specific date during the 2000 Summer Olympics.\"}", "prompt_tokens": 582, "completion_tokens": 88, "estimated": false}

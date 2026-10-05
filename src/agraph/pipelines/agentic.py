@@ -43,6 +43,8 @@ read_attribute(event_id, attribute)
     Read one field of a resolved event. attribute is one of:
     nations, competitors, gold_raw, silver_raw, bronze_raw, win_value, venue,
     date_raw, games, title.
+    "who won the gold medal" needs gold_raw. Do NOT use win_value for that:
+    win_value is the winning time or score, not the winner's name.
 
 count_events(sport, games, attribute, op, threshold)
     Count events of a sport at a Games whose numeric field passes a test.
@@ -180,6 +182,7 @@ class AgenticGraphRAG:
                 stop = "orchestrator judged the evidence sufficient"
                 break
 
+            _repair_args(tool, args, question)
             ok = self._dispatch(trace, state, tool, args, rationale)
             if not ok:
                 # A failed tool is information: tell the orchestrator so its
@@ -326,6 +329,25 @@ class AgenticGraphRAG:
             return False
         state.add(_render_evidence(tool, ev), ev.doc_ids)
         return True
+
+
+def _repair_args(tool: str, args: dict, question: str) -> None:
+    """Fix the one argument the orchestrator gets wrong consistently.
+
+    Asked who won a medal, it often requests win_value - the winning time -
+    which reads a real field and returns a confidently wrong answer.
+    """
+    if tool != "read_attribute":
+        return
+    q = question.lower()
+    if "who won" not in q and "winner" not in q:
+        return
+    for word, attr in (("gold", "gold_raw"), ("silver", "silver_raw"), ("bronze", "bronze_raw")):
+        if f"{word} medal" in q:
+            args["attribute"] = attr
+            return
+    if args.get("attribute") in (None, "win_value"):
+        args["attribute"] = "gold_raw"
 
 
 def _render_evidence(tool: str, ev) -> str:

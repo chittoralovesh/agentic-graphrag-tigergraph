@@ -1,0 +1,1 @@
+{"text": "{\n  \"shape\": \"argmax\",\n  \"sport\": \"Athletics\",\n  \"games\": \"2008 Summer Olympics\",\n  \"attribute\": \"competitors\",\n  \"direction\": \"highest\"\n}", "prompt_tokens": 368, "completion_tokens": 51, "estimated": false}

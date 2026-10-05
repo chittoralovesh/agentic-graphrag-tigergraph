@@ -1,0 +1,1 @@
+{"text": "```json\n{\"tool\": \"vector_search\", \"args\": {\"query\": \"biathlon women's sprint gold medal 2018 Winter Olympics\", \"top_k\": 5}, \"rationale\": \"Search the corpus to find the gold medalist for the women's sprint biathlon event at the 2018 Winter Olympics.\"}\n```", "prompt_tokens": 612, "completion_tokens": 77, "estimated": false}

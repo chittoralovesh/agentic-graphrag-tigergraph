@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"link_event_by_title\", \"args\": {\"title\": \"Men's 50 metre rifle three positions at the 1996 Summer Olympics\"}, \"rationale\": \"Resolve the event title to read its nations attribute directly.\"}", "prompt_tokens": 572, "completion_tokens": 56, "estimated": false}

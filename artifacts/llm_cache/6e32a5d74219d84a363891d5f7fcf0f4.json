@@ -1,0 +1,1 @@
+{"text": "```json\n{\"tool\": \"argmax_event\", \"args\": {\"sport\": \"Weightlifting\", \"games\": \"1992 Summer\", \"attribute\": \"competitors\", \"direction\": \"highest\"}, \"rationale\": \"Rank every weightlifting event at the 1992 Summer Olympics by the number of competitors to find the highest.\"}\n```", "prompt_tokens": 571, "completion_tokens": 76, "estimated": false}

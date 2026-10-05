@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"find_event_by_venue_date\", \"args\": {\"venue\": \"Val-d'Isère\", \"date\": \"16 February 1992\", \"games\": \"1992 Winter\"}, \"rationale\": \"Identify the event held at Val-d'Is\\u00e8re on 16 February 1992.\"}", "prompt_tokens": 572, "completion_tokens": 85, "estimated": false}

@@ -1,0 +1,1 @@
+{"text": "```json\n{\"tool\": \"link_event_by_title\", \"args\": {\"title\": \"Athletics at the 2012 Summer Olympics \\u2013 Women's 200 metres\"}, \"rationale\": \"Link to the women's 200 metres event at the 2012 Summer Olympics to find the gold medalist.\"}\n```", "prompt_tokens": 2723, "completion_tokens": 84, "estimated": false}

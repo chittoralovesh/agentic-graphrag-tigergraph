@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"Athletics\", \"discipline\": \"10,000 metres, Women\", \"year\": 2016, \"season\": \"Summer\"}, \"rationale\": \"Find the event title for the women's 10,000 metres at the Summer Olympics immediately before 2016.\"}", "prompt_tokens": 578, "completion_tokens": 85, "estimated": false}
