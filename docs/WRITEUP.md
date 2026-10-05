@@ -95,14 +95,63 @@ how evidence is gathered.
 | pipeline | accuracy | tokens / question | tokens per correct answer |
 |---|---|---|---|
 | RAG | 58/100 | 2,002 | 3,452 |
-| GraphRAG | 95/100 | 850 | 895 |
-| Agentic GraphRAG | see `artifacts/metrics.json` | | |
+| **GraphRAG** | **100/100** | **832** | **832** |
+| Agentic GraphRAG | 91/100 | 2,121 | 2,330 |
 
-**GraphRAG is both more accurate and cheaper than RAG.** This surprised us.
-Structured retrieval returns a small exact answer where passage-stuffing
-returns five chunks of prose, so the better pipeline is also the thriftier one.
-"Agentic costs more" is not a law; it depends entirely on what the retrieval
-returns.
+| question type | RAG | GraphRAG | Agentic |
+|---|---|---|---|
+| lookup | 17/19 | 19/19 | 19/19 |
+| multi_hop | 23/28 | 28/28 | 22/28 |
+| temporal | 16/22 | 22/22 | 19/22 |
+| aggregation | 0/21 | 21/21 | 21/21 |
+| superlative | 2/10 | 10/10 | 10/10 |
+
+Two results here are worth stating plainly, because neither is the convenient
+one.
+
+**GraphRAG is more accurate *and* cheaper than RAG.** Structured retrieval
+returns a small exact answer where passage-stuffing returns five chunks of
+prose, so the better pipeline is also the thriftier one. "Agentic costs more"
+is not a law; it depends entirely on what retrieval returns.
+
+**The agent did not beat the fully engineered fixed plan.** It scored 91 to
+100 at 2.5x the token cost. On this benchmark, adaptivity is overkill. The
+failure mode is visible in the traces: pub-022, an ambiguous venue, cost the
+agent **13 steps and 29,310 tokens and still came out wrong** — given freedom,
+it thrashed on the question the fixed plan also found hardest. (Six further
+questions ran with zero LLM budget after every model's daily quota was spent;
+excluding those, the agent scores 91/94.)
+
+### But the comparison is not as flattering to the fixed plan as it looks
+
+GraphRAG only reaches 100/100 **after three rounds of hand-written, per-shape
+parameter repair** — the fixes catalogued below. The agent reached 21/21 on
+aggregation *with none of them*:
+
+```
+pub-001  agent: count_events(sport="biathlon", games="2018 Winter Olympics", ...) -> 5   ✓ 3 steps
+pub-001  fixed plan: {"sport":"Biathlon","year":2018,"season":"Winter"}  -> count 0      ✗
+```
+
+The router split the Games into `year` and `season` with no `games` field,
+selecting an empty group and counting zero. That cost the fixed pipeline two
+questions until we wrote a deterministic repair for it. The orchestrator simply
+passed the right argument.
+
+So the honest conclusion is three-tier:
+
+1. **Structure** is where the enormous win is: 58 → 100, at lower cost.
+2. **Adaptivity** did not add accuracy over a fixed plan we had already
+   engineered against this exact question distribution, and cost 2.5x.
+3. **Adaptivity substitutes for that engineering.** The agent approached the
+   same accuracy without bespoke per-shape repairs, because it corrects its own
+   parameters from the evidence instead of needing a human to anticipate each
+   failure.
+
+Which means the real trade is not accuracy against tokens. It is **tokens
+against the cost of enumerating your question shapes in advance.** On a
+templated benchmark you can enumerate them, and the fixed plan wins. On an open
+domain you cannot, and that is what the agent's 2.5x buys you.
 
 ---
 

@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"link_event_by_title\", \"args\": {\"title\": \"Wrestling at the 1992 Summer Olympics – Men's freestyle 100 kg\"}, \"rationale\": \"Resolve the event title to get its vertex ID.\"}", "prompt_tokens": 613, "completion_tokens": 57, "estimated": false}

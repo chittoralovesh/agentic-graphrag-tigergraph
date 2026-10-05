@@ -123,11 +123,29 @@ Run on the 100 public questions.
 | pipeline | accuracy | tokens / question | tokens per correct answer |
 |---|---|---|---|
 | RAG | 58/100 | 2,002 | 3,452 |
-| GraphRAG | 85/100 | 1,467 | 1,726 |
-| Agentic GraphRAG | see `artifacts/metrics.json` | | |
+| **GraphRAG** | **100/100** | **832** | **832** |
+| Agentic GraphRAG | 91/100 | 2,121 | 2,330 |
 
-GraphRAG is both **more accurate and cheaper** than RAG: structured retrieval
+| question type | RAG | GraphRAG | Agentic |
+|---|---|---|---|
+| lookup | 17/19 | 19/19 | 19/19 |
+| multi_hop | 23/28 | 28/28 | 22/28 |
+| temporal | 16/22 | 22/22 | 19/22 |
+| aggregation | 0/21 | 21/21 | 21/21 |
+| superlative | 2/10 | 10/10 | 10/10 |
+
+GraphRAG is **more accurate and cheaper** than RAG: structured retrieval
 returns a small exact answer where passage stuffing returns 5 chunks of prose.
+
+**The agent did not beat the fixed plan** — 91 to 100, at 2.5x the tokens. On
+this benchmark adaptivity is overkill, and one ambiguous-venue question cost it
+13 steps and 29,310 tokens for a wrong answer.
+
+But GraphRAG only reaches 100/100 after three rounds of hand-written per-shape
+parameter repair. The agent reached 21/21 on aggregation with none of them,
+because it corrects its own arguments from the evidence. The real trade is not
+accuracy against tokens — it is **tokens against the cost of enumerating your
+question shapes in advance**. See [`docs/WRITEUP.md`](docs/WRITEUP.md).
 
 The open dashboard (`dashboard/index.html`) carries accuracy by type, cost per
 correct answer, the retrieval-ceiling table, tool usage, steps per question

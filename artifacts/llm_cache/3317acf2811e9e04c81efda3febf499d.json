@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"Wrestling\", \"discipline\": \"Greco-Roman\", \"year\": 1996, \"season\": \"Summer\"}, \"rationale\": \"Find the Summer Olympics edition held immediately before 1996 for Greco-Roman wrestling.\"}", "prompt_tokens": 619, "completion_tokens": 69, "estimated": false}
