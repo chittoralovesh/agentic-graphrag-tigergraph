@@ -1,0 +1,67 @@
+{
+  "k_values": [
+    5,
+    10,
+    20,
+    50,
+    100
+  ],
+  "by_k": {
+    "5": {
+      "ceiling": 0.57,
+      "mean_context_tokens": 1514.5,
+      "by_type": {
+        "aggregation": 0.0,
+        "lookup": 1.0,
+        "multi_hop": 0.8929,
+        "superlative": 0.0,
+        "temporal": 0.5909
+      }
+    },
+    "10": {
+      "ceiling": 0.64,
+      "mean_context_tokens": 3063.7,
+      "by_type": {
+        "aggregation": 0.0476,
+        "lookup": 1.0,
+        "multi_hop": 0.8929,
+        "superlative": 0.0,
+        "temporal": 0.8636
+      }
+    },
+    "20": {
+      "ceiling": 0.72,
+      "mean_context_tokens": 6212.1,
+      "by_type": {
+        "aggregation": 0.2381,
+        "lookup": 1.0,
+        "multi_hop": 0.9643,
+        "superlative": 0.1,
+        "temporal": 0.9091
+      }
+    },
+    "50": {
+      "ceiling": 0.87,
+      "mean_context_tokens": 15636.6,
+      "by_type": {
+        "aggregation": 0.5714,
+        "lookup": 1.0,
+        "multi_hop": 1.0,
+        "superlative": 0.6,
+        "temporal": 1.0
+      }
+    },
+    "100": {
+      "ceiling": 0.94,
+      "mean_context_tokens": 31666.2,
+      "by_type": {
+        "aggregation": 0.8095,
+        "lookup": 1.0,
+        "multi_hop": 1.0,
+        "superlative": 0.8,
+        "temporal": 1.0
+      }
+    }
+  },
+  "note": "ceiling is an upper bound on accuracy: it assumes a perfect generator given perfectly retrieved evidence. Actual RAG accuracy at k=5 was 58%, against a 57% ceiling."
+}

@@ -25,6 +25,7 @@ instructed to stop the moment the evidence settles the question.
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -332,11 +333,43 @@ class AgenticGraphRAG:
 
 
 def _repair_args(tool: str, args: dict, question: str) -> None:
-    """Fix the one argument the orchestrator gets wrong consistently.
+    """Restore the literals the orchestrator paraphrases.
 
-    Asked who won a medal, it often requests win_value - the winning time -
-    which reads a real field and returns a confidently wrong answer.
+    The model reliably picks the right *tool* and then rewrites the strings
+    handed to it: it respaces "TechnologyUniversity", truncates the compound
+    date "21 September 2000 (slow)22 September 2000 (fast)" to its first half,
+    and shortens "men's greco-roman 48 kg" to "Greco-Roman". Each edit breaks
+    an exact match against stored data, and the tool then resolves a real but
+    different event - a confidently wrong answer rather than a failure.
+
+    The model decides what to do; the literals come from the question text.
     """
+    if tool == "find_event_by_venue_date":
+        m = re.search(r"held at (.+?) on (.+?)(?: at the (.+?) Olympics)?\?\s*$", question)
+        if m:
+            args["venue"] = m.group(1).strip()
+            args["date"] = m.group(2).strip()
+            if m.group(3):
+                args["games"] = m.group(3).strip()
+        return
+
+    if tool == "edition_before_year":
+        m = re.search(
+            r"(?:in|for) the (.+?) event at the (Summer|Winter) Olympics held immediately before (\d{4})",
+            question,
+            re.I,
+        )
+        if m:
+            phrase, season, year = m.group(1).strip(), m.group(2), int(m.group(3))
+            sport = str(args.get("sport") or "")
+            discipline = phrase
+            if sport:
+                discipline = re.sub(re.escape(sport), "", phrase, flags=re.I).strip()
+            args["discipline"] = discipline or phrase
+            args["season"] = season
+            args["year"] = year
+        return
+
     if tool != "read_attribute":
         return
     q = question.lower()

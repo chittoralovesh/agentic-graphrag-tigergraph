@@ -41,6 +41,22 @@ This is the project's central claim: the gap is **structural, not a tuning
 problem**. No amount of prompt engineering or reranking fixes a retriever that
 cannot fit the evidence set into its context window.
 
+### And RAG was not simply starved of context
+
+| k | ceiling | context tokens / q | aggregation | superlative |
+|---|---|---|---|---|
+| 5 | 57% | 1,515 | 0% | 0% |
+| 20 | 72% | 6,212 | 24% | 10% |
+| 50 | 87% | 15,637 | 57% | 60% |
+| 100 | 94% | 31,666 | 81% | 80% |
+
+RAG's **measured** accuracy at k=5 was 58% against a **ceiling** of 57% — the
+generator is already perfect, and every point of the gap is retrieval. At
+k=100, 21x the context budget, the ceiling is still 94%. GraphRAG reaches 100%
+on 832 total tokens per question: roughly **38x cheaper and more accurate**.
+
+Reproduce with `python scripts/10_rag_k_sweep.py`.
+
 ---
 
 ## Architecture

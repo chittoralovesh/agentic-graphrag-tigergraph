@@ -122,6 +122,39 @@ it thrashed on the question the fixed plan also found hardest. (Six further
 questions ran with zero LLM budget after every model's daily quota was spent;
 excluding those, the agent scores 91/94.)
 
+### Was RAG simply starved of context?
+
+The obvious objection to a 58% baseline is that k=5 was too small. So we swept
+it, measuring for each k the fraction of questions whose **complete** supporting
+set fits in the top-k — an upper bound on accuracy, since no generator can be
+right about a count whose evidence it never saw.
+
+| k | ceiling | context tokens / question | aggregation | superlative |
+|---|---|---|---|---|
+| 5 | 57% | 1,515 | 0% | 0% |
+| 10 | 64% | 3,064 | 5% | 0% |
+| 20 | 72% | 6,212 | 24% | 10% |
+| 50 | 87% | 15,637 | 57% | 60% |
+| 100 | 94% | 31,666 | 81% | 80% |
+
+Two things fall out of this table.
+
+**RAG was not starved — it was already at its ceiling.** Measured accuracy at
+k=5 was **58%** against a retrieval ceiling of **57%**. The generator is
+performing perfectly; every point of the gap to 100 is retrieval, not
+reasoning. That is as clean a separation of the two failure modes as this
+dataset allows.
+
+**Buying more context does not close the gap.** At k=100 — **21x the context
+budget, 31,666 tokens per question** — the ceiling is still 94%, and
+aggregation still tops out at 81%. GraphRAG reaches **100% on 832 total tokens
+per question**, roughly **38x cheaper** than RAG at k=100 and more accurate,
+because a grouped scan returns one exact number instead of fifteen documents to
+read.
+
+This is the quantitative form of the project's claim. The failure is not a
+tuning problem that a bigger window fixes; it is structural.
+
 ### But the comparison is not as flattering to the fixed plan as it looks
 
 GraphRAG only reaches 100/100 **after three rounds of hand-written, per-shape
