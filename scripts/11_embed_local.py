@@ -42,7 +42,16 @@ def main() -> None:
         help="embed only each document's first chunk (one vector per document)",
     )
     ap.add_argument("--cap", type=int, default=1200, help="characters of text per embedding")
+    ap.add_argument(
+        "--push-only",
+        action="store_true",
+        help="skip embedding and upsert the vectors already saved to disk",
+    )
     args = ap.parse_args()
+
+    if args.push_only:
+        _push_saved(args)
+        return
 
     from fastembed import TextEmbedding
 
@@ -110,6 +119,54 @@ def main() -> None:
         if (i // args.batch) % 10 == 0:
             print(f"  {i + len(batch_ids)}/{len(ids)}", flush=True)
     print(f"  upserted {sent} chunk vectors in {time.perf_counter() - t0:.1f}s")
+
+
+def _push_saved(args) -> None:
+    """Upsert vectors already on disk, retrying around a suspended workspace.
+
+    Savanna free workspaces auto-suspend when idle and every endpoint returns
+    500 until they wake, so an upsert that spans that window must retry rather
+    than discard an embedding pass that took several minutes.
+    """
+    load_env()
+    from agraph.store.tigergraph import connect
+
+    data = np.load(FINAL, allow_pickle=True)
+    ids = [str(i) for i in data["ids"]]
+    mat = data["matrix"].astype(np.float32)
+    print(f"loaded {len(ids)} vectors (dim={mat.shape[1]}) from {FINAL}")
+
+    conn = None
+    for attempt in range(30):
+        try:
+            conn = connect(graphname=GRAPH, verify=False)
+            conn.graphname = GRAPH
+            conn.echo()
+            break
+        except Exception as exc:  # noqa: BLE001
+            print(f"  waiting for workspace ({str(exc)[:70]})", flush=True)
+            time.sleep(30)
+    if conn is None:
+        raise SystemExit("TigerGraph never became reachable; resume the workspace and retry")
+
+    sent = 0
+    t0 = time.perf_counter()
+    for i in range(0, len(ids), args.batch):
+        payload = {
+            cid: {"embedding": vec.tolist()}
+            for cid, vec in zip(ids[i : i + args.batch], mat[i : i + args.batch])
+        }
+        for attempt in range(6):
+            try:
+                sent += conn.upsertVertices("Chunk", list(payload.items()))
+                break
+            except Exception as exc:  # noqa: BLE001
+                if attempt == 5:
+                    raise
+                print(f"    retry batch at {i} ({str(exc)[:60]})", flush=True)
+                time.sleep(min(2**attempt * 5, 60))
+        print(f"  {min(i + args.batch, len(ids))}/{len(ids)}", flush=True)
+    print(f"upserted {sent} vectors in {time.perf_counter() - t0:.1f}s")
 
 
 if __name__ == "__main__":
