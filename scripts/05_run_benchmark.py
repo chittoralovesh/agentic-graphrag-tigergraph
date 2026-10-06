@@ -62,6 +62,11 @@ def main() -> None:
     ap.add_argument("--max-steps", type=int, default=6)
     ap.add_argument("--retrieval", default="bm25", choices=["bm25", "dense", "hybrid"])
     ap.add_argument("--no-cache", action="store_true")
+    ap.add_argument(
+        "--restart",
+        action="store_true",
+        help="discard existing results instead of resuming from them",
+    )
     args = ap.parse_args()
 
     load_env()
@@ -90,6 +95,9 @@ def main() -> None:
 
     outdir = ROOT / "artifacts" / "runs" / args.split
     outdir.mkdir(parents=True, exist_ok=True)
+    if args.restart:
+        for p in outdir.glob("*.jsonl"):
+            p.unlink()
     scored = args.split == "public"
 
     summary = {}
@@ -98,15 +106,28 @@ def main() -> None:
             print(f"unknown pipeline {name!r}, skipping")
             continue
         pipe = registry[name]()
-        print(f"\n=== {name} on {len(questions)} {args.split} questions")
-        rows, traces = [], []
+        res_path = outdir / f"results_{name}.jsonl"
+        tr_path = outdir / f"traces_{name}.jsonl"
+
+        # Resume: a long run can be interrupted (a 30-minute scheduler cap, a
+        # spent quota), and re-answering settled questions wastes the budget
+        # that stopped it. Rows are appended as each question completes, so an
+        # interrupted run resumes exactly where it stopped.
+        rows, traces, done = [], [], set()
+        if not args.restart and res_path.exists():
+            rows = [json.loads(l) for l in res_path.read_text(encoding="utf-8").splitlines() if l.strip()]
+            done = {r["qid"] for r in rows}
+            if tr_path.exists():
+                traces = [json.loads(l) for l in tr_path.read_text(encoding="utf-8").splitlines() if l.strip()]
+        todo = [q for q in questions if q["qid"] not in done]
+        print(f"\n=== {name} on {args.split}: {len(todo)} to run, {len(done)} already done")
         t0 = time.perf_counter()
 
-        for i, q in enumerate(questions, start=1):
+        for i, q in enumerate(todo, start=1):
             try:
                 result = pipe.run(q["qid"], q["question"], q.get("qtype", ""))
             except Exception as exc:  # noqa: BLE001 - one bad question must not end the run
-                print(f"  [{i}] {q['qid']} FAILED: {str(exc)[:120]}")
+                print(f"  [{i}] {q['qid']} FAILED: {str(exc)[:120]}", flush=True)
                 continue
             tr = result.trace
             traces.append(tr.to_dict())

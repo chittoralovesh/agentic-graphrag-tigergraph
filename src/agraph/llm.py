@@ -14,6 +14,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import threading
 import time
 from dataclasses import dataclass
@@ -74,7 +75,7 @@ class GeminiClient:
         api_key: str | None = None,
         model: str | None = None,
         embed_model: str | None = None,
-        rpm: int = 90,
+        rpm: int | None = None,
         use_cache: bool = True,
     ):
         from google import genai  # imported lazily so the module loads without the dep
@@ -101,13 +102,28 @@ class GeminiClient:
         ]
         if self.model not in self.model_pool:
             self.model_pool.insert(0, self.model)
-        self.exhausted: set[str] = set()
+        # Free-tier quota is scoped to the Google Cloud project behind a key,
+        # not to the key itself, so extra keys only add budget when they come
+        # from a different account. Keys are tried in order and a (key, model)
+        # pair is retired independently.
+        self.api_keys = [self.api_key]
+        for name in ("GEMINI_API_KEY_2", "GEMINI_API_KEY_3", "GEMINI_API_KEY_4"):
+            extra = os.environ.get(name, "").strip()
+            if extra and extra not in self.api_keys:
+                self.api_keys.append(extra)
+        self.key_index = 0
+        self.exhausted: set[tuple[int, str]] = set()
         self.model_calls: dict[str, int] = {}
         self.embed_model = embed_model or os.environ.get(
             "GEMINI_EMBED_MODEL", "text-embedding-004"
         )
         self._client = genai.Client(api_key=self.api_key)
-        self._limiter = RateLimiter(rpm)
+        self._clients = {0: self._client}
+        # Free-tier per-minute limits are far below what a paid key allows
+        # (around 10-15 rpm). Pacing above the limit turns every call into a
+        # 429 plus a backoff sleep, which looks like a hang rather than a
+        # rate limit, so default low and let the environment raise it.
+        self._limiter = RateLimiter(rpm or int(os.environ.get("GEMINI_RPM", "10")))
         self.use_cache = use_cache
         if use_cache:
             _CACHE_DIR.mkdir(parents=True, exist_ok=True)
@@ -157,7 +173,14 @@ class GeminiClient:
             cfg.system_instruction = system
 
         last_err: Exception | None = None
-        for attempt in range(max_retries):
+        attempt = 0
+        # Switching away from a spent (key, model) pair is not a retry of the
+        # same request, so it gets its own budget. Charging it against
+        # max_retries meant a run could exhaust its attempts walking past
+        # already-dead models and never reach a key that still had quota.
+        switches = 0
+        max_switches = len(self.api_keys) * len(self.model_pool)
+        while attempt < max_retries:
             model = self._active_model()
             try:
                 self._limiter.wait()
@@ -198,9 +221,11 @@ class GeminiClient:
                 # A per-day cap will not clear inside this run: retire the
                 # model and retry immediately on the next one rather than
                 # sleeping against a quota that resets tomorrow.
-                if _is_daily_quota(exc) and self._retire(model):
+                if _is_daily_quota(exc) and switches < max_switches and self._retire(model):
+                    switches += 1
                     continue
-                if attempt < max_retries - 1:
+                attempt += 1
+                if attempt < max_retries:
                     if _is_rate_limit(exc):
                         time.sleep(min(2**attempt * 2, 60))
                     elif _is_transient(exc):
@@ -211,26 +236,46 @@ class GeminiClient:
                 break
         raise RuntimeError(f"Gemini call failed after {max_retries} attempts: {last_err}")
 
-    # -- model pool --------------------------------------------------------
+    # -- key and model pool ------------------------------------------------
+    def _client_for(self, index: int):
+        if index not in self._clients:
+            from google import genai
+
+            self._clients[index] = genai.Client(api_key=self.api_keys[index])
+        return self._clients[index]
+
     def _active_model(self) -> str:
-        if self.model not in self.exhausted:
+        """Pick the next unspent (key, model) pair, exhausting models per key."""
+        if (self.key_index, self.model) not in self.exhausted:
             return self.model
-        for m in self.model_pool:
-            if m not in self.exhausted:
-                self.model = m
-                return m
-        # Everything is spent; try the original and let the error surface.
+        for ki in range(len(self.api_keys)):
+            for m in self.model_pool:
+                if (ki, m) not in self.exhausted:
+                    if ki != self.key_index:
+                        print(f"  [llm] switching to API key #{ki + 1}", flush=True)
+                        self.key_index = ki
+                        self._client = self._client_for(ki)
+                    self.model = m
+                    return m
         return self.model_pool[0]
 
     def _retire(self, model: str) -> bool:
-        """Mark a model's daily quota spent. True if another model remains."""
-        if model not in self.exhausted:
-            self.exhausted.add(model)
-            print(f"  [llm] daily quota spent on {model}; switching", flush=True)
-        remaining = [m for m in self.model_pool if m not in self.exhausted]
-        if remaining:
-            self.model = remaining[0]
-            return True
+        """Mark one (key, model) pair spent. True if any pair remains."""
+        pair = (self.key_index, model)
+        if pair not in self.exhausted:
+            self.exhausted.add(pair)
+            print(
+                f"  [llm] daily quota spent on {model} (key #{self.key_index + 1}); switching",
+                flush=True,
+            )
+        for ki in range(len(self.api_keys)):
+            for m in self.model_pool:
+                if (ki, m) not in self.exhausted:
+                    if ki != self.key_index:
+                        self.key_index = ki
+                        self._client = self._client_for(ki)
+                    self.model = m
+                    return True
         return False
 
     # -- embeddings --------------------------------------------------------
@@ -271,11 +316,29 @@ def _is_rate_limit(exc: Exception) -> bool:
 def _is_daily_quota(exc: Exception) -> bool:
     """A per-day free-tier cap, as opposed to a per-minute rate limit.
 
-    Per-day caps do not clear within a run, so backing off against one just
-    stalls; the caller should move to a different model instead.
+    Classified by the server's own retryDelay rather than by searching the
+    message for "PerDay": a 429 lists *every* quota metric for the model, so a
+    per-minute breach also mentions the daily one. Matching on the string
+    retired four healthy models within seconds of a routine rate limit.
+
+    A delay beyond ten minutes cannot be waited out inside a run, so the caller
+    should switch models; anything shorter is an ordinary rate limit.
     """
     s = str(exc)
-    return "429" in s and ("PerDay" in s or "per day" in s.lower())
+    if "429" not in s:
+        return False
+    m = re.search(r"'retryDelay':\s*'(\d+(?:\.\d+)?)s'", s)
+    if m:
+        return float(m.group(1)) > 600
+    # The human-readable form ("Please retry in 4h45m22s") is sometimes the
+    # only delay present; hours or tens of minutes mean a daily cap.
+    m = re.search(r"retry in (?:(\d+)h)?(?:(\d+)m)?", s)
+    if m and (m.group(1) or m.group(2)):
+        minutes = int(m.group(1) or 0) * 60 + int(m.group(2) or 0)
+        return minutes > 10
+    # No retryDelay: fall back to the message, which only says "per day" for
+    # a genuine daily cap.
+    return "per day" in s.lower() or "PerDayPerProject" in s
 
 
 def _is_transient(exc: Exception) -> bool:
