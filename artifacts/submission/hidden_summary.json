@@ -1,0 +1,9 @@
+{
+  "n_questions": 50,
+  "answered": 50,
+  "unanswered": 0,
+  "total_tokens": 104683,
+  "mean_tokens_per_question": 2093.7,
+  "mean_steps": 4.64,
+  "mean_citations": 7.98
+}

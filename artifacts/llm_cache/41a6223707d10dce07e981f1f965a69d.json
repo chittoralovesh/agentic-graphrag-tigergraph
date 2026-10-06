@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"wrestling\", \"discipline\": \"men's freestyle 120 kg\", \"year\": 2012, \"season\": \"Summer\"}, \"rationale\": \"I need to identify the specific Olympic Games held immediately before 2012 to locate the event.\"}", "prompt_tokens": 618, "completion_tokens": 76, "estimated": false}

@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"swimming\", \"discipline\": \"men's 200 metre backstroke\", \"year\": 2016, \"season\": \"Summer\"}, \"rationale\": \"I need to identify the specific Summer Olympics edition held immediately before 2016 to query the correct event.\"}", "prompt_tokens": 619, "completion_tokens": 79, "estimated": false}

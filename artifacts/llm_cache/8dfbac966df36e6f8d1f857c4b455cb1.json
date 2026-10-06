@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"edition_before_year\", \"args\": {\"sport\": \"swimming\", \"discipline\": \"women's 200 metre backstroke\", \"year\": 2016, \"season\": \"Summer\"}, \"rationale\": \"I need to identify the specific Olympic Games held immediately before 2016 to find the correct event.\"}", "prompt_tokens": 619, "completion_tokens": 78, "estimated": false}

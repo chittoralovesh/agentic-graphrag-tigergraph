@@ -102,14 +102,14 @@
     },
     "agentic": {
       "n": 100,
-      "correct": 91,
-      "accuracy": 0.91,
-      "total_tokens": 212058,
-      "mean_tokens": 2120.58,
-      "mean_steps": 4.92,
-      "mean_seconds": 20.345390000000002,
-      "mean_citations": 6.09,
-      "tokens_per_correct": 2330.3076923076924,
+      "correct": 100,
+      "accuracy": 1.0,
+      "total_tokens": 187843,
+      "mean_tokens": 1878.43,
+      "mean_steps": 5.07,
+      "mean_seconds": 3.57977,
+      "mean_citations": 6.18,
+      "tokens_per_correct": 1878.43,
       "by_type": {
         "aggregation": {
           "n": 21,
@@ -120,10 +120,10 @@
         },
         "temporal": {
           "n": 22,
-          "correct": 19,
-          "accuracy": 0.8636363636363636,
-          "mean_tokens": 2157,
-          "mean_steps": 5.636363636363637
+          "correct": 22,
+          "accuracy": 1.0,
+          "mean_tokens": 2006.2272727272727,
+          "mean_steps": 6
         },
         "superlative": {
           "n": 10,
@@ -134,10 +134,10 @@
         },
         "multi_hop": {
           "n": 28,
-          "correct": 22,
-          "accuracy": 0.7857142857142857,
-          "mean_tokens": 3227.3928571428573,
-          "mean_steps": 5.75
+          "correct": 28,
+          "accuracy": 1.0,
+          "mean_tokens": 2481.035714285714,
+          "mean_steps": 6
         },
         "lookup": {
           "n": 19,
@@ -147,37 +147,33 @@
           "mean_steps": 6
         }
       },
-      "mean_doc_recall": 0.919737,
-      "complete_doc_recall": 0.9,
+      "mean_doc_recall": 0.994737,
+      "complete_doc_recall": 0.98,
       "behaviour": {
         "tool_usage": {
           "orchestrate": 100,
           "synthesize": 100,
-          "evidence_critic": 63,
-          "read_attribute": 56,
-          "find_event_by_venue_date": 24,
+          "evidence_critic": 69,
+          "read_attribute": 69,
+          "find_event_by_venue_date": 28,
           "count_events": 21,
+          "edition_before_year": 21,
           "link_event_by_title": 20,
-          "edition_before_year": 19,
-          "argmax_event": 10,
-          "vector_search": 7
+          "argmax_event": 10
         },
         "stop_reasons": {
-          "read_attribute returned a complete result; no review needed": 56,
+          "read_attribute returned a complete result; no review needed": 69,
           "count_events returned a complete result; no review needed": 21,
-          "argmax_event returned a complete result; no review needed": 10,
-          "evidence critic judged the evidence sufficient": 6,
-          "orchestrator failed to produce an action": 6,
-          "budget exhausted": 1
+          "argmax_event returned a complete result; no review needed": 10
         },
         "mean_steps_by_type": {
           "aggregation": 3,
           "lookup": 6,
-          "multi_hop": 5.75,
+          "multi_hop": 6,
           "superlative": 3,
-          "temporal": 5.64
+          "temporal": 6
         },
-        "strategy_changes": 4
+        "strategy_changes": 0
       }
     }
   },

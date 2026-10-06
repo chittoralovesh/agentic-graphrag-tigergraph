@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"argmax_event\", \"args\": {\"sport\": \"Cycling\", \"games\": \"2012 Summer Olympics\", \"attribute\": \"competitors\", \"direction\": \"highest\"}, \"rationale\": \"I need to find the cycling event with the maximum number of competitors at the 2012 Summer Olympics.\"}", "prompt_tokens": 612, "completion_tokens": 70, "estimated": false}

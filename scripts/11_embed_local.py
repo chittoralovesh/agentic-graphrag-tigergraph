@@ -36,22 +36,49 @@ def main() -> None:
     ap.add_argument("--model", default="BAAI/bge-small-en-v1.5")
     ap.add_argument("--push", action="store_true", help="also upsert vectors into TigerGraph")
     ap.add_argument("--batch", type=int, default=250, help="TigerGraph upsert batch")
+    ap.add_argument(
+        "--doc-level",
+        action="store_true",
+        help="embed only each document's first chunk (one vector per document)",
+    )
+    ap.add_argument("--cap", type=int, default=1200, help="characters of text per embedding")
     args = ap.parse_args()
 
     from fastembed import TextEmbedding
 
     with open(ROOT / "artifacts" / "chunks.pkl", "rb") as fh:
         chunks = pickle.load(fh)
+    if args.doc_level:
+        # One vector per document, taken from chunk 0, which carries the title
+        # and the infobox. Complete at document granularity rather than a
+        # partial fill of chunk-level vectors.
+        chunks = [c for c in chunks if c.ordinal == 0]
     print(f"embedding {len(chunks)} chunks with {args.model} ...")
 
     model = TextEmbedding(args.model)
+    ids = [c.chunk_id for c in chunks]
+    texts = [c.embed_text[: args.cap] for c in chunks]
+
+    # Stream into a preallocated array rather than list(model.embed(...)):
+    # materialising every vector at once grew to over 5 GB on this corpus and
+    # starved the benchmark running alongside it. The result is ~25 MB.
     t0 = time.perf_counter()
-    vectors = list(model.embed([c.embed_text for c in chunks]))
+    mat: np.ndarray | None = None
+    filled = 0
+    step = 1000
+    for start in range(0, len(texts), step):
+        block = list(model.embed(texts[start : start + step]))
+        arr = np.asarray(block, dtype=np.float32)
+        if mat is None:
+            mat = np.zeros((len(texts), arr.shape[1]), dtype=np.float32)
+        mat[filled : filled + len(arr)] = arr
+        filled += len(arr)
+        rate = filled / max(time.perf_counter() - t0, 1e-6)
+        print(f"  {filled}/{len(texts)}  {rate:.0f}/s", flush=True)
     elapsed = time.perf_counter() - t0
 
-    mat = np.asarray(vectors, dtype=np.float32)
+    assert mat is not None and filled == len(texts), "embedding count mismatch"
     mat /= np.clip(np.linalg.norm(mat, axis=1, keepdims=True), 1e-9, None)
-    ids = [c.chunk_id for c in chunks]
 
     OUT.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(FINAL, ids=np.array(ids, dtype=object), matrix=mat)

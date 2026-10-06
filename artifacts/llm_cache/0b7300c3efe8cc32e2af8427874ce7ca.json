@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"argmax_event\", \"args\": {\"sport\": \"Alpine Skiing\", \"games\": \"1994 Winter Olympics\", \"attribute\": \"competitors\", \"direction\": \"highest\"}, \"rationale\": \"I need to find the alpine skiing event with the maximum number of competitors at the 1994 Winter Olympics.\"}", "prompt_tokens": 613, "completion_tokens": 73, "estimated": false}

@@ -23,6 +23,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
+# Answers carry names like "Süleymanoğlu", and the Windows console defaults to
+# cp1252, where printing one raises UnicodeEncodeError and kills the run. Force
+# UTF-8 so progress output can never abort a benchmark.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 from agraph.corpus import iter_questions  # noqa: E402
 from agraph.eval.judge import grade  # noqa: E402
 from agraph.llm import GeminiClient, load_env  # noqa: E402
@@ -164,16 +171,14 @@ def main() -> None:
             else:
                 print(f"  [{i:>3}] {q['qid']:<9} steps={tr.n_steps} tok={tr.tokens.total}")
             rows.append(row)
+            # Appended per question, not at the end: a run cut short by a
+            # scheduler cap or a spent quota must keep the answers it paid for.
+            with open(res_path, "a", encoding="utf-8") as fh:
+                fh.write(json.dumps(row, ensure_ascii=False) + "\n")
+            with open(tr_path, "a", encoding="utf-8") as fh:
+                fh.write(json.dumps(tr.to_dict(), ensure_ascii=False) + "\n")
 
         elapsed = time.perf_counter() - t0
-        (outdir / f"traces_{name}.jsonl").write_text(
-            "\n".join(json.dumps(t, ensure_ascii=False) for t in traces) + "\n",
-            encoding="utf-8",
-        )
-        (outdir / f"results_{name}.jsonl").write_text(
-            "\n".join(json.dumps(r, ensure_ascii=False) for r in rows) + "\n",
-            encoding="utf-8",
-        )
 
         tok = sum(r["tokens"] for r in rows)
         line = {

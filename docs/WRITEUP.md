@@ -96,13 +96,13 @@ how evidence is gathered.
 |---|---|---|---|
 | RAG | 58/100 | 2,002 | 3,452 |
 | **GraphRAG** | **100/100** | **832** | **832** |
-| Agentic GraphRAG | 91/100 | 2,121 | 2,330 |
+| **Agentic GraphRAG** | **100/100** | 1,878 | 1,878 |
 
 | question type | RAG | GraphRAG | Agentic |
 |---|---|---|---|
 | lookup | 17/19 | 19/19 | 19/19 |
-| multi_hop | 23/28 | 28/28 | 22/28 |
-| temporal | 16/22 | 22/22 | 19/22 |
+| multi_hop | 23/28 | 28/28 | 28/28 |
+| temporal | 16/22 | 22/22 | 22/22 |
 | aggregation | 0/21 | 21/21 | 21/21 |
 | superlative | 2/10 | 10/10 | 10/10 |
 
@@ -114,13 +114,18 @@ returns a small exact answer where passage-stuffing returns five chunks of
 prose, so the better pipeline is also the thriftier one. "Agentic costs more"
 is not a law; it depends entirely on what retrieval returns.
 
-**The agent did not beat the fully engineered fixed plan.** It scored 91 to
-100 at 2.5x the token cost. On this benchmark, adaptivity is overkill. The
-failure mode is visible in the traces: pub-022, an ambiguous venue, cost the
-agent **13 steps and 29,310 tokens and still came out wrong** — given freedom,
-it thrashed on the question the fixed plan also found hardest. (Six further
-questions ran with zero LLM budget after every model's daily quota was spent;
-excluding those, the agent scores 91/94.)
+**The agent matches the fixed plan's accuracy and costs 2.3x more to do it.**
+Both reach 100/100; GraphRAG spends 832 tokens per question and the agent
+1,878. On a benchmark whose question shapes can be enumerated in advance,
+adaptivity buys no accuracy and is pure overhead.
+
+An earlier agent run scored 91/100, and the gap was instructive: all three of
+its genuine misses came from the orchestrator paraphrasing a literal — it
+respaced a venue, truncated the compound date "21 September 2000 (slow)22
+September 2000 (fast)" to its first half, and shortened a discipline to
+"Greco-Roman". One of those, an ambiguous venue, cost **13 steps and 29,310
+tokens** before giving up. Restoring the literals from the question text closed
+all three.
 
 ### Was RAG simply starved of context?
 

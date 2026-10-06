@@ -1,0 +1,1 @@
+{"text": "{\"tool\": \"count_events\", \"args\": {\"sport\": \"Shooting\", \"games\": \"2000 Summer Olympics\", \"attribute\": \"competitors\", \"op\": \">\", \"threshold\": 42}, \"rationale\": \"I need to count the number of shooting events at the 2000 Summer Olympics with more than 42 competitors.\"}", "prompt_tokens": 614, "completion_tokens": 80, "estimated": false}
