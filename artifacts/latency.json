@@ -1,0 +1,23 @@
+{
+  "rag": {
+    "n": 5,
+    "mean_seconds": 2.29,
+    "median_seconds": 1.84,
+    "min_seconds": 1.56,
+    "max_seconds": 3.59
+  },
+  "graphrag": {
+    "n": 5,
+    "mean_seconds": 4.0,
+    "median_seconds": 4.04,
+    "min_seconds": 3.67,
+    "max_seconds": 4.3
+  },
+  "agentic": {
+    "n": 5,
+    "mean_seconds": 15.71,
+    "median_seconds": 8.3,
+    "min_seconds": 4.45,
+    "max_seconds": 41.19
+  }
+}

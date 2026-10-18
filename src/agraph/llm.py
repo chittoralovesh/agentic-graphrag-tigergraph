@@ -138,10 +138,11 @@ class GeminiClient:
         return _CACHE_DIR / f"{key}.json"
 
     def _cache_key(self, prompt: str, system: str, temperature: float) -> str:
-        # Deliberately excludes the model: a cached answer stays valid when a
-        # quota forces a different model mid-run, which keeps re-runs free.
+        # Includes the model: a benchmark that compares pipelines must hold the
+        # generator fixed, so a cached answer from a different model is not a
+        # valid substitute. Each model gets its own cache namespace.
         blob = json.dumps(
-            [system, prompt, temperature], ensure_ascii=False
+            [self.model, system, prompt, temperature], ensure_ascii=False
         ).encode("utf-8")
         return hashlib.sha256(blob).hexdigest()[:32]
 
